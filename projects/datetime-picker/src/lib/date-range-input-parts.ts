@@ -30,6 +30,7 @@ import {
   MatDateFormats,
 } from '@angular/material/core';
 import { _computeAriaAccessibleName } from './aria-accessible-name';
+import { NGX_MAT_DATE_ADAPTER, NGX_MAT_DATE_FORMATS } from './date-adapter';
 import { NgxDateRange, NgxDateSelectionModelChange } from './date-selection-model';
 import { NgxDateFilterFn, NgxMatDatepickerInputBase } from './datepicker-input-base';
 
@@ -90,10 +91,12 @@ abstract class NgxMatDateRangeInputPartBase<D>
     private _injector: Injector,
     @Optional() public _parentForm: NgForm,
     @Optional() public _parentFormGroup: FormGroupDirective,
-    @Optional() dateAdapter: DateAdapter<D>,
-    @Optional() @Inject(MAT_DATE_FORMATS) dateFormats: MatDateFormats,
+    @Optional() @Inject(NGX_MAT_DATE_ADAPTER) ngxDateAdapter: DateAdapter<D>,
+    @Optional() globalDateAdapter: DateAdapter<D>,
+    @Optional() @Inject(NGX_MAT_DATE_FORMATS) ngxDateFormats: MatDateFormats,
+    @Optional() @Inject(MAT_DATE_FORMATS) globalDateFormats: MatDateFormats,
   ) {
-    super(_elementRef, dateAdapter, dateFormats);
+    super(_elementRef, ngxDateAdapter, globalDateAdapter, ngxDateFormats, globalDateFormats);
   }
 
   ngOnInit() {
@@ -251,8 +254,10 @@ export class NgxMatStartDate<D> extends NgxMatDateRangeInputPartBase<D> {
     injector: Injector,
     @Optional() parentForm: NgForm,
     @Optional() parentFormGroup: FormGroupDirective,
-    @Optional() dateAdapter: DateAdapter<D>,
-    @Optional() @Inject(MAT_DATE_FORMATS) dateFormats: MatDateFormats,
+    @Optional() @Inject(NGX_MAT_DATE_ADAPTER) ngxDateAdapter: DateAdapter<D>,
+    @Optional() globalDateAdapter: DateAdapter<D>,
+    @Optional() @Inject(NGX_MAT_DATE_FORMATS) ngxDateFormats: MatDateFormats,
+    @Optional() @Inject(MAT_DATE_FORMATS) globalDateFormats: MatDateFormats,
   ) {
     super(
       rangeInput,
@@ -261,8 +266,10 @@ export class NgxMatStartDate<D> extends NgxMatDateRangeInputPartBase<D> {
       injector,
       parentForm,
       parentFormGroup,
-      dateAdapter,
-      dateFormats,
+      ngxDateAdapter,
+      globalDateAdapter,
+      ngxDateFormats,
+      globalDateFormats,
     );
   }
 
@@ -363,8 +370,10 @@ export class NgxMatEndDate<D> extends NgxMatDateRangeInputPartBase<D> {
     injector: Injector,
     @Optional() parentForm: NgForm,
     @Optional() parentFormGroup: FormGroupDirective,
-    @Optional() dateAdapter: DateAdapter<D>,
-    @Optional() @Inject(MAT_DATE_FORMATS) dateFormats: MatDateFormats,
+    @Optional() @Inject(NGX_MAT_DATE_ADAPTER) ngxDateAdapter: DateAdapter<D>,
+    @Optional() globalDateAdapter: DateAdapter<D>,
+    @Optional() @Inject(NGX_MAT_DATE_FORMATS) ngxDateFormats: MatDateFormats,
+    @Optional() @Inject(MAT_DATE_FORMATS) globalDateFormats: MatDateFormats,
   ) {
     super(
       rangeInput,
@@ -373,8 +382,10 @@ export class NgxMatEndDate<D> extends NgxMatDateRangeInputPartBase<D> {
       injector,
       parentForm,
       parentFormGroup,
-      dateAdapter,
-      dateFormats,
+      ngxDateAdapter,
+      globalDateAdapter,
+      ngxDateFormats,
+      globalDateFormats,
     );
   }
 
