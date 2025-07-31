@@ -59,6 +59,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { DateAdapter, ThemePalette } from '@angular/material/core';
 import { Observable, Subject, Subscription, merge } from 'rxjs';
+import { NGX_MAT_DATE_ADAPTER, getEffectiveDateAdapter } from './date-adapter';
 import { filter, take } from 'rxjs/operators';
 import { NgxMatCalendar, NgxMatCalendarView } from './calendar';
 import { NgxMatCalendarCellClassFunction, NgxMatCalendarUserEvent } from './calendar-body';
@@ -701,16 +702,22 @@ export abstract class NgxMatDatepickerBase<
     private _ngZone: NgZone,
     private _viewContainerRef: ViewContainerRef,
     @Inject(NGX_MAT_DATEPICKER_SCROLL_STRATEGY) scrollStrategy: any,
-    @Optional() private _dateAdapter: DateAdapter<D>,
+    @Optional() @Inject(NGX_MAT_DATE_ADAPTER) private _ngxDateAdapter: DateAdapter<D>,
+    @Optional() private _globalDateAdapter: DateAdapter<D>,
     @Optional() private _dir: Directionality,
     private _model: NgxMatDateSelectionModel<S, D>,
   ) {
+    // Prefer NGX-specific adapter, fallback to global adapter
+    this._dateAdapter = getEffectiveDateAdapter(this._ngxDateAdapter, this._globalDateAdapter);
+    
     if (!this._dateAdapter) {
-      throw createMissingDateImplError('DateAdapter');
+      throw createMissingDateImplError('DateAdapter or NgxMatDateAdapter');
     }
 
     this._scrollStrategy = scrollStrategy;
   }
+
+  protected _dateAdapter: DateAdapter<D>;
 
   ngOnChanges(changes: SimpleChanges) {
     const positionChange = changes['xPosition'] || changes['yPosition'];

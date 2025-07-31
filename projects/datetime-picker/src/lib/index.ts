@@ -1,5 +1,6 @@
 export * from './calendar';
 export * from './calendar-body';
+export * from './date-adapter';
 export * from './date-range-input';
 export * from './date-range-input-parts';
 export * from './date-range-picker';

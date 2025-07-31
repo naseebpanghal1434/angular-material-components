@@ -23,8 +23,10 @@ import {
   input,
   output,
   viewChild,
+  Inject,
 } from '@angular/core';
 import { DateAdapter } from '@angular/material/core';
+import { NGX_MAT_DATE_ADAPTER, getEffectiveDateAdapter } from './date-adapter';
 import { Subscription } from 'rxjs';
 import { startWith } from 'rxjs/operators';
 import {
@@ -147,13 +149,19 @@ export class NgxMatMultiYearView<D> implements AfterContentInit, OnDestroy {
   /** The year of the selected date. Null if the selected date is null. */
   _selectedYear: number | null;
 
+  public _dateAdapter: DateAdapter<D>;
+
   constructor(
     private _changeDetectorRef: ChangeDetectorRef,
-    @Optional() public _dateAdapter: DateAdapter<D>,
+    @Optional() @Inject(NGX_MAT_DATE_ADAPTER) private _ngxDateAdapter: DateAdapter<D>,
+    @Optional() private _globalDateAdapter: DateAdapter<D>,
     @Optional() private _dir?: Directionality,
   ) {
+    // Prefer NGX-specific adapter, fallback to global adapter
+    this._dateAdapter = getEffectiveDateAdapter(this._ngxDateAdapter, this._globalDateAdapter);
+    
     if (!this._dateAdapter) {
-      throw createMissingDateImplError('DateAdapter');
+      throw createMissingDateImplError('DateAdapter or NgxMatDateAdapter');
     }
 
     this._activeDate = this._dateAdapter.today();

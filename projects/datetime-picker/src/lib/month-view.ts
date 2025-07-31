@@ -30,6 +30,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { DateAdapter, MAT_DATE_FORMATS, MatDateFormats } from '@angular/material/core';
+import { NGX_MAT_DATE_ADAPTER, NGX_MAT_DATE_FORMATS, getEffectiveDateAdapter, getEffectiveDateFormats } from './date-adapter';
 import { Subscription } from 'rxjs';
 import { startWith } from 'rxjs/operators';
 import {
@@ -198,22 +199,29 @@ export class NgxMatMonthView<D> implements AfterContentInit, OnChanges, OnDestro
   /** The names of the weekdays. */
   _weekdays: { long: string; narrow: string }[];
 
+  public _dateAdapter: DateAdapter<D>;
+  private _dateFormats: MatDateFormats;
+
   constructor(
     readonly _changeDetectorRef: ChangeDetectorRef,
-    @Optional()
-    @Inject(MAT_DATE_FORMATS)
-    private _dateFormats: MatDateFormats,
-    @Optional() public _dateAdapter: DateAdapter<D>,
+    @Optional() @Inject(NGX_MAT_DATE_FORMATS) private _ngxDateFormats: MatDateFormats,
+    @Optional() @Inject(MAT_DATE_FORMATS) private _globalDateFormats: MatDateFormats,
+    @Optional() @Inject(NGX_MAT_DATE_ADAPTER) private _ngxDateAdapter: DateAdapter<D>,
+    @Optional() private _globalDateAdapter: DateAdapter<D>,
     @Optional() private _dir?: Directionality,
     @Inject(NGX_MAT_DATE_RANGE_SELECTION_STRATEGY)
     @Optional()
     private _rangeStrategy?: NgxMatDateRangeSelectionStrategy<D>,
   ) {
+    // Prefer NGX-specific adapters, fallback to global adapters
+    this._dateAdapter = getEffectiveDateAdapter(this._ngxDateAdapter, this._globalDateAdapter);
+    this._dateFormats = getEffectiveDateFormats(this._ngxDateFormats, this._globalDateFormats);
+    
     if (!this._dateAdapter) {
-      throw createMissingDateImplError('DateAdapter');
+      throw createMissingDateImplError('DateAdapter or NgxMatDateAdapter');
     }
     if (!this._dateFormats) {
-      throw createMissingDateImplError('MAT_DATE_FORMATS');
+      throw createMissingDateImplError('MAT_DATE_FORMATS or NgxMatDateFormats');
     }
 
     this._activeDate = this._dateAdapter.today();

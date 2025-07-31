@@ -26,6 +26,7 @@ import {
   MatDateFormats,
   ThemePalette,
 } from '@angular/material/core';
+import { NGX_MAT_DATE_ADAPTER, NGX_MAT_DATE_FORMATS, getEffectiveDateAdapter, getEffectiveDateFormats } from './date-adapter';
 import { Subject, Subscription } from 'rxjs';
 import {
   NgxDateSelectionModelChange,
@@ -233,23 +234,30 @@ export abstract class NgxMatDatepickerInputBase<S, D = NgxExtractDateTypeFromSel
 
   constructor(
     protected _elementRef: ElementRef<HTMLInputElement>,
-    @Optional() public _dateAdapter: DateAdapter<D>,
-    @Optional()
-    @Inject(MAT_DATE_FORMATS)
-    private _dateFormats: MatDateFormats,
+    @Optional() @Inject(NGX_MAT_DATE_ADAPTER) private _ngxDateAdapter: DateAdapter<D>,
+    @Optional() private _globalDateAdapter: DateAdapter<D>,
+    @Optional() @Inject(NGX_MAT_DATE_FORMATS) private _ngxDateFormats: MatDateFormats,
+    @Optional() @Inject(MAT_DATE_FORMATS) private _globalDateFormats: MatDateFormats,
   ) {
+    // Prefer NGX-specific adapters, fallback to global adapters
+    this._dateAdapter = getEffectiveDateAdapter(this._ngxDateAdapter, this._globalDateAdapter);
+    this._dateFormats = getEffectiveDateFormats(this._ngxDateFormats, this._globalDateFormats);
+    
     if (!this._dateAdapter) {
-      throw createMissingDateImplError('DateAdapter');
+      throw createMissingDateImplError('DateAdapter or NgxMatDateAdapter');
     }
     if (!this._dateFormats) {
-      throw createMissingDateImplError('MAT_DATE_FORMATS');
+      throw createMissingDateImplError('MAT_DATE_FORMATS or NgxMatDateFormats');
     }
 
     // Update the displayed date when the locale changes.
-    this._localeSubscription = _dateAdapter.localeChanges.subscribe(() => {
+    this._localeSubscription = this._dateAdapter.localeChanges.subscribe(() => {
       this._assignValueProgrammatically(this.value);
     });
   }
+
+  public _dateAdapter: DateAdapter<D>;
+  private _dateFormats: MatDateFormats;
 
   ngAfterViewInit() {
     this._isInitialized = true;

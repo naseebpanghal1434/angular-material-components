@@ -23,6 +23,7 @@ import {
 import { outputFromObservable, toObservable } from '@angular/core/rxjs-interop';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { DateAdapter, MAT_DATE_FORMATS, MatDateFormats } from '@angular/material/core';
+import { NGX_MAT_DATE_ADAPTER, NGX_MAT_DATE_FORMATS, getEffectiveDateAdapter, getEffectiveDateFormats } from './date-adapter';
 import { Subject, Subscription } from 'rxjs';
 import { NgxMatCalendarCellClassFunction, NgxMatCalendarUserEvent } from './calendar-body';
 import { NGX_MAT_SINGLE_DATE_SELECTION_MODEL_PROVIDER, NgxDateRange } from './date-selection-model';
@@ -59,14 +60,21 @@ export class NgxMatCalendarHeader<D> {
     private _intl: NgxMatDatepickerIntl,
     @Inject(forwardRef(() => NgxMatCalendar))
     public calendar: NgxMatCalendar<D>,
-    @Optional() private _dateAdapter: DateAdapter<D>,
-    @Optional()
-    @Inject(MAT_DATE_FORMATS)
-    private _dateFormats: MatDateFormats,
+    @Optional() @Inject(NGX_MAT_DATE_ADAPTER) private _ngxDateAdapter: DateAdapter<D>,
+    @Optional() private _globalDateAdapter: DateAdapter<D>,
+    @Optional() @Inject(NGX_MAT_DATE_FORMATS) private _ngxDateFormats: MatDateFormats,
+    @Optional() @Inject(MAT_DATE_FORMATS) private _globalDateFormats: MatDateFormats,
     changeDetectorRef: ChangeDetectorRef,
   ) {
+    // Prefer NGX-specific adapters, fallback to global adapters
+    this._dateAdapter = getEffectiveDateAdapter(this._ngxDateAdapter, this._globalDateAdapter);
+    this._dateFormats = getEffectiveDateFormats(this._ngxDateFormats, this._globalDateFormats);
+    
     this.calendar.stateChanges.subscribe(() => changeDetectorRef.markForCheck());
   }
+
+  private _dateAdapter: DateAdapter<D>;
+  private _dateFormats: MatDateFormats;
 
   /** The display text for the current calendar view. */
   get periodButtonText(): string {
@@ -244,6 +252,8 @@ export class NgxMatCalendar<D> implements AfterContentInit, AfterViewChecked, On
   _calendarHeaderPortal: Portal<any>;
 
   private _intlChanges: Subscription;
+  private _dateAdapter: DateAdapter<D>;
+  private _dateFormats: MatDateFormats;
 
   /**
    * Used for scheduling that focus should be moved to the active cell on the next tick.
@@ -378,18 +388,22 @@ export class NgxMatCalendar<D> implements AfterContentInit, AfterViewChecked, On
 
   constructor(
     _intl: NgxMatDatepickerIntl,
-    @Optional() private _dateAdapter: DateAdapter<D>,
-    @Optional()
-    @Inject(MAT_DATE_FORMATS)
-    private _dateFormats: MatDateFormats,
+    @Optional() @Inject(NGX_MAT_DATE_ADAPTER) private _ngxDateAdapter: DateAdapter<D>,
+    @Optional() private _globalDateAdapter: DateAdapter<D>,
+    @Optional() @Inject(NGX_MAT_DATE_FORMATS) private _ngxDateFormats: MatDateFormats,
+    @Optional() @Inject(MAT_DATE_FORMATS) private _globalDateFormats: MatDateFormats,
     private _changeDetectorRef: ChangeDetectorRef,
   ) {
+    // Prefer NGX-specific adapters, fallback to global adapters
+    this._dateAdapter = getEffectiveDateAdapter(this._ngxDateAdapter, this._globalDateAdapter);
+    this._dateFormats = getEffectiveDateFormats(this._ngxDateFormats, this._globalDateFormats);
+    
     if (!this._dateAdapter) {
-      throw createMissingDateImplError('DateAdapter');
+      throw createMissingDateImplError('DateAdapter or NgxMatDateAdapter');
     }
 
     if (!this._dateFormats) {
-      throw createMissingDateImplError('MAT_DATE_FORMATS');
+      throw createMissingDateImplError('MAT_DATE_FORMATS or NgxMatDateFormats');
     }
 
     this._intlChanges = _intl.changes.subscribe(() => {
