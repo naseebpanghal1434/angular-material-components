@@ -1,16 +1,16 @@
 {
-  "name": "@ngxmc/amc",
+  "name": "@naseebsingh3510/np1",
   "version": "19.3.1",
-  "description": "Angular Material Datetime Picker",
-  "author": "HO Hong Quan",
+  "description": "Np1",
+  "author": "NP",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/GNURub/angular-material-components.git"
+    "url": "git+https://github.com/naseebpanghal1434/angular-material-components"
   },
   "bugs": {
-    "url": "https://github.com/GNURub/angular-material-components/issues"
+    "url": "https://github.com/naseebpanghal1434/angular-material-components/issues"
   },
-  "homepage": "https://github.com/GNURub/angular-material-components",
+  "homepage": "https://github.com/naseebpanghal1434/angular-material-components",
   "keywords": [
     "angular",
     "angular2",

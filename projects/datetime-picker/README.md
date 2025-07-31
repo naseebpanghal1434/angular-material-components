@@ -41,7 +41,11 @@ Choose the version corresponding to your Angular version:
 ## Getting started
 
 ```
-npm install --save  @ngxmc/datetime-picker
+# For Angular 19
+npm install --save @ngxmc/datetime-picker@angular-19
+
+# Or specific version
+npm install --save @ngxmc/datetime-picker@19.4.0
 ```
 
 ## Setup
