@@ -1,16 +1,16 @@
 {
-  "name": "@ngxmc/datetime-picker",
+  "name": "@naseebsingh3510/datetime-picker",
   "version": "19.4.0",
-  "description": "Angular Material Datetime Picker",
-  "author": "HO Hong Quan",
+  "description": "Angular Material Datetime Picker with custom date adapter support",
+  "author": "NP",
   "repository": {
     "type": "git",
-    "url": "https://github.com/GNURub/angular-material-components.git"
+    "url": "https://github.com/naseebpanghal1434/angular-material-components.git"
   },
   "bugs": {
-    "url": "https://github.com/GNURub/angular-material-components/issues"
+    "url": "https://github.com/naseebpanghal1434/angular-material-components/issues"
   },
-  "homepage": "https://github.com/GNURub/angular-material-components",
+  "homepage": "https://github.com/naseebpanghal1434/angular-material-components",
   "keywords": [
     "angular",
     "angular2",

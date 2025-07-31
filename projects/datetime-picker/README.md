@@ -42,10 +42,10 @@ Choose the version corresponding to your Angular version:
 
 ```
 # For Angular 19
-npm install --save @ngxmc/datetime-picker@angular-19
+npm install --save @naseebsingh3510/datetime-picker
 
-# Or specific version
-npm install --save @ngxmc/datetime-picker@19.4.0
+# Or with specific version
+npm install --save @naseebsingh3510/datetime-picker@19.4.0
 ```
 
 ## Setup
@@ -194,7 +194,7 @@ Starting from Angular 19, you can use different date adapters for Angular Materi
 ```typescript
 import { ApplicationConfig } from '@angular/core';
 import { provideNativeDateAdapter } from '@angular/material/core';
-import { provideNgxMatDateAdapter } from '@ngxmc/datetime-picker';
+import { provideNgxMatDateAdapter } from '@naseebsingh3510/datetime-picker';
 import { CustomDateTimeAdapter, CUSTOM_DATETIME_FORMATS } from './custom-adapters';
 
 export const appConfig: ApplicationConfig = {
